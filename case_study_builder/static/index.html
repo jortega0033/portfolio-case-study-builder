@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portfolio Case Study Builder</title>
+<link rel="stylesheet" href="/static/app.css">
+<script src="/static/app.js" defer></script>
+</head>
+<body>
+<header class="app-header">
+  <h1 class="app-name">Portfolio Case Study Builder</h1>
+</header>
+<div class="layout">
+  <nav aria-label="Case studies" class="browser">
+    <button type="button" id="new-project">New case study</button>
+    <ul id="project-list"></ul>
+  </nav>
+  <main class="workspace">
+    <form id="editor" aria-label="Case study editor" class="editor" novalidate>
+      <div id="editor-empty" class="empty" hidden>No case study is open. Choose one from the list or select "New case study".</div>
+      <div id="editor-body" hidden>
+        <div class="field">
+          <label for="title">Case study title</label>
+          <input id="title" type="text" maxlength="120" autocomplete="off" placeholder="Name of the project">
+        </div>
+        <div id="sections"></div>
+        <p id="sections-empty" class="empty" hidden>This case study has no sections. Use "Add section" to start writing.</p>
+        <div class="actions">
+          <button type="button" id="add-section">Add section</button>
+          <button type="submit" id="save" class="primary">Save</button>
+        </div>
+      </div>
+      <div id="status" role="status" aria-live="polite"></div>
+      <div id="error" role="alert"></div>
+      <button type="button" id="reload" hidden>Reload latest</button>
+    </form>
+    <section id="preview" aria-label="Reading preview" class="preview">
+      <article id="preview-article"></article>
+    </section>
+  </main>
+</div>
+</body>
+</html>
