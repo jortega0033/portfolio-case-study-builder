@@ -41,7 +41,7 @@ Checks that do not exist yet: there is no JavaScript unit test runner, no automa
 
 These are product decisions from the PRD, not style preferences. A change that breaks one is wrong even if the tests pass.
 
-1. **Offline.** No request to any host other than the app's own loopback address, at run time or in a test. No CDN, no web font, no analytics, no remote image. `tests/test_static.py` scans the static files for external URLs; keep every new static file inside that scan.
+1. **Offline.** No request to any host other than the app's own loopback address, at run time or in a test. No CDN, no web font, no analytics, no remote image. `tests/test_static.py` scans the static files for external URLs; keep every new static file inside that scan. At the baseline the scan lists three file names and the HTML-injection scan reads only `app.js`, so a new file is not covered until those tests walk the directory ([`docs/architecture.md`](docs/architecture.md) section 6, item 4). Do not add a served file before it is scanned.
 2. **No dependencies.** Python standard library only. Native HTML, CSS and JavaScript only. Do not add `requirements.txt`, `pyproject.toml` dependencies, `package.json` or vendored libraries.
 3. **Loopback only.** The server binds `127.0.0.1`. Every request must pass the Host check; every `POST` and `PUT` must carry a same-origin `Origin`. New write routes get the same checks.
 4. **Text is never HTML.** The server stores and returns text verbatim. The client renders with `textContent` and `value` only. `innerHTML`, `outerHTML`, `insertAdjacentHTML`, `eval`, inline `<script>`, inline `<style>` and `style=` attributes are banned (the Content-Security-Policy forbids them and `tests/test_static.py` checks for them).
@@ -83,7 +83,7 @@ A ticket is done when its acceptance criteria were observed, not when the code w
 2. For each acceptance check ID the ticket names (for example `CS-T03`): the test name that covers it, or the manual step and what was seen.
 3. For a change to the schema: a test that opens a database of the previous version built in a temporary directory, and a test that a newer `user_version` is still refused with exit code 2.
 4. For a change in the browser client: what was run in a real browser, on which browser version and operating system, with external requests blocked, and whether the console showed errors. If no browser was run, say "not verified in a browser" in those words.
-5. For a new static file: that it is in `STATIC_FILES`, covered by the external-URL scan, and served with the right content type.
+5. For a new static file: that it is in `STATIC_FILES`, covered by the external-URL scan and, for a script, by the HTML-injection scan (name the tests that read it), and served with the right content type.
 6. `git status` is clean after the run: no database, no `__pycache__`, no generated file left behind.
 7. Every server process you started was stopped.
 8. The PRD statuses that changed (`[Planned]` to `[Observed]`), and the update to `README.md` limitations and to [`docs/architecture.md`](docs/architecture.md) section 3 if the ticket changed what is implemented.
