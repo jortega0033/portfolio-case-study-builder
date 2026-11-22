@@ -26,7 +26,7 @@ From the repository root, on that branch, in an interactive Claude Code session,
 ```text
 Run the loop-constraints skill, then the loop-budget skill, then the loop-triage skill once, in report-only mode.
 Inputs: `gh issue list --state open`, `gh pr list --state open`, `git log --since="48 hours ago" origin/main`,
-and one run of `python -m unittest discover -s tests`. There is no CI to read.
+and one run of `python -m unittest discover -s tests`. CI exists (`.github/workflows/ci.yml`) but this run does not read it.
 Do not edit any file except STATE.md and loop-run-log.md. Do not commit, push, comment, label or open anything.
 Update STATE.md and append one entry to loop-run-log.md.
 ```
