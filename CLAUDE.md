@@ -67,7 +67,7 @@ Keep new browser logic that has no need for the DOM (for example the pagination 
 
 ## Git workflow
 
-- `main` is the default branch. Branch protection is set on GitHub by the owner (pull request required, CI checks required); the rule holds regardless: never commit to `main` and never push to it directly.
+- `main` is the default branch. Branch protection on GitHub requires a pull request and green CI (set by the owner after the kit merge); the rule holds regardless: never commit to `main` and never push to it directly.
 - One issue, one branch, one pull request. Branch from the tip of `origin/main`: `git fetch origin`, then `git switch -c feature/<issue-number>-<short-slug> origin/main`.
 - Small commits with a Conventional Commits subject (`feat:`, `fix:`, `docs:`, `test:`, `chore:`), as the existing history uses.
 - Open the pull request as a draft. Reference the issue (`Closes #n`) and the epic (`Part of epic #1`). Paste the evidence listed below into the description.

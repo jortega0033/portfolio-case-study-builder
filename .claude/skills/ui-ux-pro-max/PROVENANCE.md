@@ -10,6 +10,7 @@
 
 1. Commands in `SKILL.md` call `.claude/skills/ui-ux-pro-max/scripts/search.py` (project-relative, run from the repository root) instead of `"${CLAUDE_PLUGIN_ROOT}/.claude/skills/ui-ux-pro-max/scripts/search.py"`.
 2. Left out: `scripts/tests/` (upstream's own test suite and fixtures) and `__pycache__/`.
-3. Added: this file and `LICENSE`.
+3. Copied in full, including `data/` (17 CSV/JSON files) and `data/stacks/` (22 files), 39 files in total. The repository rule `data/` in `.gitignore` is overridden for this folder by a negation entry; check with `git ls-files .claude/skills/ui-ux-pro-max/data | wc -l` (expect 39).
+4. Added: this file and `LICENSE`.
 
 Requires Python 3, no third-party packages. Smoke test: `python .claude/skills/ui-ux-pro-max/scripts/search.py "keyboard focus modal" --domain ux -n 1`.
