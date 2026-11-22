@@ -1,0 +1,133 @@
+# CLAUDE.md
+
+Working rules for Claude Code and other coding agents in this repository. Human contributors can use it the same way.
+
+Portfolio Case Study Builder is a small, private, offline editor for portfolio case studies: a Python standard-library HTTP server on loopback, a SQLite file, and a hand-written HTML, CSS and JavaScript page. The baseline (milestone M1) is implemented. Epic E1, "Print-ready case studies", is planned and not built.
+
+## Sources of truth
+
+Read these before changing anything. Do not copy their content into other files; link to them.
+
+| Question | Where the answer is |
+|---|---|
+| What the product is, scope, milestones, API, invariants, fitting rules, acceptance check IDs (`CS-B*`, `CS-T*`, `CS-A*`, `CS-P*`, `CS-D*`, `CS-R*`, `CS-Q*`) | [`docs/PRD.md`](docs/PRD.md) |
+| How the code is actually built, one traced workflow with line citations, what is implemented, planned or still unverified, and where the PRD and the code disagree | [`docs/architecture.md`](docs/architecture.md) |
+| How to run and use the app, current limitations | [`README.md`](README.md) |
+| What to build next | The open GitHub issues. The epic is [issue #1](https://github.com/jortega0033/portfolio-case-study-builder/issues/1); its body lists the child issues in dependency order with estimates. Order as planned on 2026-11-22: #9, #10 and #2 can start together; then #3 and #11; then #4, #5, #6 and #7 in series. [`docs/architecture.md`](docs/architecture.md) section 7 says which issue covers which finding. |
+| Exact API behaviour | The tests in [`tests/`](tests/). They are the executable contract; the PRD summarises it. |
+
+If the PRD and the code disagree, do not pick one silently. Check [`docs/architecture.md`](docs/architecture.md) section 5 first; if the disagreement is not listed there, add it and say so in the pull request.
+
+## Setup, run, test
+
+There is nothing to install. Python 3.12 or newer, standard library only. No `pip`, no `npm`, no build step, no lint command. CI runs the unit tests (see "Delivery workflow").
+
+```text
+python -m unittest discover -s tests -v
+python -m case_study_builder --data-dir ./demo-data --port 8765
+```
+
+- The test command starts real servers on ephemeral loopback ports and takes about 20 seconds. Run it once per change, never in a watch loop.
+- The run command serves <http://127.0.0.1:8765/>. `--port 0` picks a free port and prints `Serving on http://127.0.0.1:<port>/`. Stop it with Ctrl+C. Always stop a server you started.
+- `./demo-data`, `data/`, `*.sqlite*` and `*.db` are ignored by Git. Never commit a database. A test that needs an old database must build it in a temporary directory (a binary fixture cannot be committed, because `.gitignore` excludes it).
+- Set `PYTHONDONTWRITEBYTECODE=1` if you do not want `__pycache__` folders (they are ignored either way).
+- On Linux use `python3` if `python` is missing.
+
+Both commands were run on 2026-11-22 during repository preparation (Windows 11, Python 3.13.14). The suite has 38 tests. It printed `OK` in two of three runs; in one run `test_b07_content_type_and_length` raised `ConnectionAbortedError: [WinError 10053]`. That is a known intermittent defect of the baseline on Windows ([`docs/architecture.md`](docs/architecture.md) section 5, item 12), not something to work around: if it happens, rerun once and report both results; never skip or loosen the test. The server started, saved a case study and returned it unchanged after a restart. Details and the checks that were not run are in [`docs/architecture.md`](docs/architecture.md) section 4.
+
+Checks that do not exist yet: there is no JavaScript unit test runner, no automated browser test and no print or PDF check. The browser flow in PRD section 10 is manual. Do not claim a browser check passed unless you ran it and kept the evidence.
+
+## Hard constraints
+
+These are product decisions from the PRD, not style preferences. A change that breaks one is wrong even if the tests pass.
+
+1. **Offline.** No request to any host other than the app's own loopback address, at run time or in a test. No CDN, no web font, no analytics, no remote image. `tests/test_static.py` scans the static files for external URLs; keep every new static file inside that scan. At the baseline the scan lists three file names and the HTML-injection scan reads only `app.js`, so a new file is not covered until those tests walk the directory ([`docs/architecture.md`](docs/architecture.md) section 6, item 4). Do not add a served file before it is scanned.
+2. **No dependencies.** Python standard library only. Native HTML, CSS and JavaScript only. Do not add `requirements.txt`, `pyproject.toml` dependencies, `package.json` or vendored libraries.
+3. **Loopback only.** The server binds `127.0.0.1`. Every request must pass the Host check; every `POST` and `PUT` must carry a same-origin `Origin`. New write routes get the same checks.
+4. **Text is never HTML.** The server stores and returns text verbatim. The client renders with `textContent` and `value` only. `innerHTML`, `outerHTML`, `insertAdjacentHTML`, `eval`, inline `<script>`, inline `<style>` and `style=` attributes are banned (the Content-Security-Policy forbids them and `tests/test_static.py` checks for them).
+5. **Static files are a whitelist.** `STATIC_FILES` in `case_study_builder/server.py` lists every path that is served. A new script, stylesheet or SVG must be added there explicitly. Do not serve a directory.
+6. **Saves are atomic and revision-checked.** Invariants I1 to I5 in PRD section 6.1 must hold after every change to `storage.py`.
+7. **Fictional content only.** Fixtures, examples and screenshots use invented names and numbers. Never use a real case study, a real person or anything from a local data directory.
+8. **Artwork is original.** No third-party images, icons or fonts in the repository.
+
+## Architecture boundaries
+
+Details and citations are in [`docs/architecture.md`](docs/architecture.md). The short version:
+
+| File | Owns | Must not |
+|---|---|---|
+| `case_study_builder/validation.py` | Payload rules and limits. Pure functions. | Do I/O, import `storage` or `server`. |
+| `case_study_builder/storage.py` | SQLite schema, migrations, transactions. One connection per operation. | Know about HTTP, JSON envelopes or status codes. |
+| `case_study_builder/server.py` | Routing, Host and Origin checks, body limits, response headers, error mapping, the static whitelist. | Contain SQL or validation rules. |
+| `case_study_builder/__main__.py` | Command-line arguments, exit codes, signal handling. | Contain request handling. |
+| `case_study_builder/static/` | The browser client. The server and SQLite are authoritative; the client holds a working copy plus the revision it loaded. | Trust its own state over a server response; build HTML from text. |
+| `tests/` | The executable contract. `tests/helpers.py` starts a real server per test. | Mock the server or the database. |
+
+Keep new browser logic that has no need for the DOM (for example the pagination rules of PRD section 6.2) in its own file as pure functions, so that it can be tested without a layout engine.
+
+## Git workflow
+
+- `main` is the default branch. Branch protection on GitHub requires a pull request and green CI (set by the owner after the kit merge); the rule holds regardless: never commit to `main` and never push to it directly.
+- One issue, one branch, one pull request. Branch from the tip of `origin/main`: `git fetch origin`, then `git switch -c feature/<issue-number>-<short-slug> origin/main`.
+- Small commits with a Conventional Commits subject (`feat:`, `fix:`, `docs:`, `test:`, `chore:`), as the existing history uses.
+- Open the pull request as a draft. Reference the issue (`Closes #n`) and the epic (`Part of epic #1`). Paste the evidence listed below into the description.
+- Agents do not merge, do not close issues and do not push to `main`. An agent marks its pull request ready only when both gates passed and CI is green (see "Delivery workflow"). The owner merges and releases.
+- Do not edit `LICENSE` or `.gitignore` as part of a feature.
+- Do not rewrite published history.
+
+## Evidence before a ticket is called done
+
+A ticket is done when its acceptance criteria were observed, not when the code was written. Put this in the pull request:
+
+1. Green CI on the pull request (every job of `.github/workflows/ci.yml`), and the full output tail of `python -m unittest discover -s tests -v`: the `Ran N tests` line and `OK`. State N. It must not be lower than on `main` (38 at the baseline), and no test may be skipped, deleted or weakened without a sentence explaining why.
+2. For each acceptance check ID the ticket names (for example `CS-T03`): the test name that covers it, or the manual step and what was seen.
+3. For a change to the schema: a test that opens a database of the previous version built in a temporary directory, and a test that a newer `user_version` is still refused with exit code 2.
+4. For a change in the browser client: what was run in a real browser, on which browser version and operating system, with external requests blocked, and whether the console showed errors. If no browser was run, say "not verified in a browser" in those words.
+5. For a new static file: that it is in `STATIC_FILES`, covered by the external-URL scan and, for a script, by the HTML-injection scan (name the tests that read it), and served with the right content type.
+6. `git status` is clean after the run: no database, no `__pycache__`, no generated file left behind.
+7. Every server process you started was stopped.
+8. The PRD statuses that changed (`[Planned]` to `[Observed]`), and the update to `README.md` limitations and to [`docs/architecture.md`](docs/architecture.md) section 3 if the ticket changed what is implemented.
+
+Report only commands you ran and results you saw. If a check could not be run, say which and why.
+
+## Project agents and ticket workflow
+
+`.claude/agents/` holds the project-local subagents: nine Agency Agents roles and `loop-verifier`. Every role file starts with a section "In this repository", written for this project: the constraints that bind the role, the files it owns or reviews, its commands or the inputs it must be given, a checklist of this project's invariants, the parts of the generic text that do not apply, and what it hands back. That section and this file override the generic upstream text below it, which recommends frameworks, cloud services, Playwright and similar tools. Provenance, licence, local changes and the loading check are in [`.claude/agency-agents/README.md`](.claude/agency-agents/README.md).
+
+When asked to implement, continue or finish a GitHub issue, follow the playbook [`.claude/skills/implement-ticket/SKILL.md`](.claude/skills/implement-ticket/SKILL.md). Claude Code loads it on its own for ticket work; `/implement-ticket <issue number>` starts it by hand. Delegate to the roles without waiting to be asked: each role's `description` ends with a "Use proactively ..." sentence, which is what makes Claude Code delegate to it.
+
+| When | Agent | Tools | Runs |
+|---|---|---|---|
+| Before coding | Codebase Onboarding Engineer | Read, Grep, Glob | At the start of a ticket in an unfamiliar area: traces the code paths with file and line citations |
+| Before coding | Software Architect | Read, Grep, Glob | When a ticket adds or changes a module boundary, data model, storage schema, public API or dependency: checks the design against the boundaries above |
+| While coding | Backend Architect | all | Implements in `case_study_builder/*.py` |
+| While coding | Frontend Developer | all | Implements in `case_study_builder/static/` |
+| While coding | Test Automation Engineer | all | Tests and fixtures in `tests/`, browser and JavaScript checks |
+| While coding | PDF Engine Architect | Read, Grep, Glob | When a ticket touches pagination, print CSS or PDF output: reviews the rules and screen/print parity |
+| After coding | Accessibility Auditor | Read, Grep, Glob | When a ticket changed the interface, keyboard handling, focus order or markup |
+| Every ticket: review gate | Code Reviewer | Read, Grep, Glob | The full diff, before a pull request is opened, until no material finding is left |
+| Every ticket: acceptance gate | Reality Checker | Read, Grep, Glob | Last step: each acceptance criterion against the evidence that was actually produced |
+| Not part of ticket work | loop-verifier | Read, Grep, Glob | Part of the Loop setup; not used at L1 |
+
+- The review gate and the acceptance gate run on every ticket, whatever its size. The other roles run when their trigger matches the change.
+- The session or role that wrote a change does not count as its reviewer.
+- A role with `Read, Grep, Glob` cannot run commands. Give it the diff, the acceptance criteria and the recorded command output.
+- The pull request description has a section "Agent roles run": each role that ran, what it was asked and its verdict, and any step done without a role.
+- The same role names exist in a user-level Agency Agents install (`~/.claude/agents/`). Inside this repository the project copies take precedence. A session that was already open when the files changed keeps the old definitions; start a new session.
+
+## Delivery workflow
+
+How a ticket gets from the queue to the owner. Each piece is described in its own file; this part only links them.
+
+- **Start and driver.** Only the owner starts ticket work, with `/next-ticket` ([`.claude/skills/next-ticket/SKILL.md`](.claude/skills/next-ticket/SKILL.md)); it runs one ticket and follows the playbook [`implement-ticket`](.claude/skills/implement-ticket/SKILL.md). There is no scheduler. Labels: `status:ready`, `status:blocked`, `status:in-progress`, `needs-decision`.
+- **Review gate hook.** [`.claude/hooks/role_gate.py`](.claude/hooks/role_gate.py) blocks `gh pr create` and `gh pr ready` until Code Reviewer and Reality Checker ran after the last code edit; documentation-only changes pass. Start Claude Code with `ROLE_GATE=off` in the environment to switch it off for that session.
+- **Permissions.** [`.claude/settings.json`](.claude/settings.json): documented commands are allowed; force pushes, pushes to `main`, merges, releases and reads of `.env` are denied; edits to CI, agent configuration and Loop files ask first.
+- **CI.** [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs the unit tests and the gate self-test on Linux and Windows, Python 3.12 and 3.13. Every job must be green before a pull request is marked ready. The intermittent Windows test of issue #9 is reported, never worked around.
+- **Pull request.** Use [`.github/pull_request_template.md`](.github/pull_request_template.md). Add one line to [`CHANGELOG.md`](CHANGELOG.md) under Unreleased in every ticket pull request.
+- **UI and writing.** [`docs/ui-quality.md`](docs/ui-quality.md) holds the ten UI rules; the `ui-ux-pro-max` and `unslop` skills in `.claude/skills/` are used for UI work and for copy.
+- **Merge and release.** Only the owner merges and releases ([`docs/RELEASING.md`](docs/RELEASING.md)). Security reports: [`SECURITY.md`](SECURITY.md).
+- **Decisions.** The owner's decisions are recorded in [`docs/owner-decisions.md`](docs/owner-decisions.md). An agent that finds one blocking a ticket stops and says so.
+
+## Loop Engineering
+
+The repository has a Loop Engineering setup at level L1: report-only, started by hand, no scheduler, no automated fixes, no auto-merge. [`LOOP.md`](LOOP.md) has the manual triage command; [`loop-constraints.md`](loop-constraints.md) has the binding rules. A triage run may change only `STATE.md` and `loop-run-log.md`. Do not raise the level or add a schedule; that is the owner's decision.
