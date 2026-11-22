@@ -13,7 +13,7 @@ Read these before changing anything. Do not copy their content into other files;
 | What the product is, scope, milestones, API, invariants, fitting rules, acceptance check IDs (`CS-B*`, `CS-T*`, `CS-A*`, `CS-P*`, `CS-D*`, `CS-R*`, `CS-Q*`) | [`docs/PRD.md`](docs/PRD.md) |
 | How the code is actually built, one traced workflow with line citations, what is implemented, planned or still unverified, and where the PRD and the code disagree | [`docs/architecture.md`](docs/architecture.md) |
 | How to run and use the app, current limitations | [`README.md`](README.md) |
-| What to build next | The open GitHub issues. The epic is issue #1; its body lists the child issues in dependency order. |
+| What to build next | The open GitHub issues. The epic is [issue #1](https://github.com/jortega0033/portfolio-case-study-builder/issues/1); its body lists the child issues in dependency order with estimates. Order as planned on 2026-11-22: #9, #10 and #2 can start together; then #3 and #11; then #4, #5, #6 and #7 in series. [`docs/architecture.md`](docs/architecture.md) section 7 says which issue covers which finding. |
 | Exact API behaviour | The tests in [`tests/`](tests/). They are the executable contract; the PRD summarises it. |
 
 If the PRD and the code disagree, do not pick one silently. Check [`docs/architecture.md`](docs/architecture.md) section 5 first; if the disagreement is not listed there, add it and say so in the pull request.

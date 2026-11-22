@@ -127,3 +127,21 @@ The headless Chrome results matter for the planned work: they show that a browse
 8. **Tests start real servers.** About 20 seconds for 38 tests. Do not run them in a watch loop. One of them is intermittent on Windows (section 5, item 12), which weakens "the suite passed" as evidence until it is fixed.
 9. **No project deletion and no list paging** (assumption A7). `GET /api/v1/projects` returns everything (`storage.py:113-123`).
 10. **The body read has no time limit.** `_read_json` calls `rfile.read(length)` (`server.py:188`) and `Handler` sets no `timeout` (`server.py:49`; the default of `socketserver.StreamRequestHandler` is `None`). A `POST` or `PUT` that passes the early checks, declares a length and never sends its body holds one daemon thread until the client disconnects. Read from the source, not exercised. On a loopback-only, single-user server this is a known limit and not a defect to fix in passing; a fix for the early rejections (section 5, item 12) must not add an unbounded wait of its own.
+
+## 7. Where the planned work is tracked
+
+The epic is [#1 "Print-ready case studies (E1)"](https://github.com/jortega0033/portfolio-case-study-builder/issues/1). Its body has the dependency order, the estimates and the finish line. The table links the findings of this document to the issue that deals with each. All of these issues were open and nothing in them was implemented on 2026-11-22.
+
+| Issue | Covers | Sections of this document |
+|---|---|---|
+| [#9](https://github.com/jortega0033/portfolio-case-study-builder/issues/9) Baseline reliability on Windows | Port in use on Windows; the intermittent early-rejection failure | Section 5, items 4 and 12; section 6, item 8. Section 6, item 10 is named there as a limit that stays |
+| [#10](https://github.com/jortega0033/portfolio-case-study-builder/issues/10) Browser check harness | Headless Chrome checks from the standard library, the JavaScript test runner, static scans that walk the directory, the page-box test | Section 4 (the Chrome rows); section 6, items 4, 6 and 7 |
+| [#2](https://github.com/jortega0033/portfolio-case-study-builder/issues/2) Typed content blocks and revisions (E1-S1) | Schema 2 with migration, snapshots, restore, the block editor | Section 5, item 11; section 6, items 1, 2 and 3 |
+| [#3](https://github.com/jortega0033/portfolio-case-study-builder/issues/3) Placeholder artwork and figure blocks (E1-S2) | Bundled SVG artwork, the figure block | Section 6, item 5 |
+| [#11](https://github.com/jortega0033/portfolio-case-study-builder/issues/11) Pagination core | The fitting rules as pure functions, the page box decision | Section 5, items 8, 10 and 13 |
+| [#4](https://github.com/jortega0033/portfolio-case-study-builder/issues/4) Measured pagination (E1-S3) | Measurement in the browser, the paginated preview, the page type scale | Section 5, items 1 and 9 |
+| [#5](https://github.com/jortega0033/portfolio-case-study-builder/issues/5) Overflow diagnostics (E1-S4) | Marks and the diagnostics region | Section 3 (the E1-S4 row) |
+| [#6](https://github.com/jortega0033/portfolio-case-study-builder/issues/6) Print and PDF parity (E1-S5) | Print rules, the parity test by page count | Section 6, item 7 |
+| [#7](https://github.com/jortega0033/portfolio-case-study-builder/issues/7) Release gate (E1-S6) | Keyboard walkthrough, contrast, console errors, the platform record | Section 3 (accessibility and browser flow rows); section 5, items 2 and 3 |
+
+No issue covers these: the missing API contract document and the inline fixtures (section 5, items 5 and 6), `Cache-Control` on static files (section 5, item 7), project deletion and list paging (section 6, item 9). The last two were considered during planning and left out of the epic.
