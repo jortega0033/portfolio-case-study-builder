@@ -106,7 +106,7 @@ When asked to implement, continue or finish a GitHub issue, follow the playbook 
 | While coding | PDF Engine Architect | Read, Grep, Glob | When a ticket touches pagination, print CSS or PDF output: reviews the rules and screen/print parity |
 | After coding | Accessibility Auditor | Read, Grep, Glob | When a ticket changed the interface, keyboard handling, focus order or markup |
 | Every ticket: review gate | Code Reviewer | Read, Grep, Glob | The full diff, before a pull request is opened, until no material finding is left |
-| Every ticket: acceptance gate | Reality Checker | Read, Grep, Glob | Last step: each acceptance criterion against the evidence that was actually produced |
+| Every ticket: acceptance gate | Reality Checker | Read, Grep, Glob | After Code Reviewer and before the draft pull request: each acceptance criterion against the evidence that was actually produced |
 | Not part of ticket work | loop-verifier | Read, Grep, Glob | Part of the Loop setup; not used at L1 |
 
 - The review gate and the acceptance gate run on every ticket, whatever its size. The other roles run when their trigger matches the change.
