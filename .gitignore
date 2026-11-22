@@ -11,3 +11,6 @@ data/
 .prep/
 test-results/
 playwright-report/
+
+# Local review-gate ledger
+.claude/state/

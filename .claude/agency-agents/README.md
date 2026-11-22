@@ -93,3 +93,11 @@ claude -p "List every project subagent defined in .claude/agents with its exact 
 ```
 
 Exit code 0. The answer listed ten subagents. Software Architect, Code Reviewer, Codebase Onboarding Engineer, PDF Engine Architect, Accessibility Auditor and Reality Checker: tools `Read, Grep, Glob`, section present. Backend Architect, Frontend Developer and Test Automation Engineer: no `tools:` line (all tools), section present. `loop-verifier`: tools `Read, Grep, Glob`, no section, as intended. The skill `implement-ticket` was reported as available. Not shown by this check: no role was launched, and the answer does not say whether it came from the loaded definitions or from reading the files, so it does not prove which copy a launched role uses on a machine that also has a user-level install.
+
+## Local change: SDLC kit (2026-11-22)
+
+- Added the review gate hook `.claude/hooks/role_gate.py` (gate roles: Code Reviewer, Reality Checker) and `.claude/settings.json`.
+- Added one checklist line naming `docs/ui-quality.md` to Frontend Developer, Accessibility Auditor and Code Reviewer. UI Designer and UX Architect are not installed here. In Code Reviewer, the "no CI" clause in "Project" was changed to say that CI runs the tests.
+- Added the skills `next-ticket`, `ui-ux-pro-max` and `unslop`, and the steps for UI check, writing pass, changelog and CI in `implement-ticket`.
+- Added CI, the pull request template, issue template, CODEOWNERS, Dependabot config, `SECURITY.md`, `CHANGELOG.md`, `docs/RELEASING.md`, `docs/ui-quality.md` and `docs/owner-decisions.md`.
+- No role file text from upstream was changed.

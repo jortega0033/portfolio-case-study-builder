@@ -24,6 +24,7 @@ vibe: If it's not tested with a screen reader, it's not accessible.
 - No horizontal page scroll at 800 by 600; `prefers-reduced-motion` respected.
 - After a 409, Save is disabled and focus moves to "Reload latest" (`docs/architecture.md` section 1, step 7).
 - `test_b14_labels_and_controls_present` only checks that strings exist; contrast, focus and tab order are "Needs verification" (`docs/architecture.md` section 3).
+- Changed screens are also read against [`docs/ui-quality.md`](../../docs/ui-quality.md) (plain copy, one accent colour, status shown by more than colour).
 
 **Does not apply here.** The axe-core and Lighthouse commands, and the tab, menu, carousel and data-table patterns (the app has none). Instead: source review plus the caller's record; write "not checked with a screen reader" unless that record shows one.
 

@@ -20,7 +20,7 @@ If the PRD and the code disagree, do not pick one silently. Check [`docs/archite
 
 ## Setup, run, test
 
-There is nothing to install. Python 3.12 or newer, standard library only. No `pip`, no `npm`, no build step, no lint command, no CI.
+There is nothing to install. Python 3.12 or newer, standard library only. No `pip`, no `npm`, no build step, no lint command. CI runs the unit tests (see "Delivery workflow").
 
 ```text
 python -m unittest discover -s tests -v
@@ -67,11 +67,11 @@ Keep new browser logic that has no need for the DOM (for example the pagination 
 
 ## Git workflow
 
-- `main` is the default branch. It has no branch protection on GitHub (checked 2026-11-22), so the rule is by agreement: never commit to `main` and never push to it directly.
+- `main` is the default branch. Branch protection is set on GitHub by the owner (pull request required, CI checks required); the rule holds regardless: never commit to `main` and never push to it directly.
 - One issue, one branch, one pull request. Branch from the tip of `origin/main`: `git fetch origin`, then `git switch -c feature/<issue-number>-<short-slug> origin/main`.
 - Small commits with a Conventional Commits subject (`feat:`, `fix:`, `docs:`, `test:`, `chore:`), as the existing history uses.
 - Open the pull request as a draft. Reference the issue (`Closes #n`) and the epic (`Part of epic #1`). Paste the evidence listed below into the description.
-- Agents do not merge, do not mark a draft ready, do not close issues and do not push to `main`. The owner does.
+- Agents do not merge, do not close issues and do not push to `main`. An agent marks its pull request ready only when both gates passed and CI is green (see "Delivery workflow"). The owner merges and releases.
 - Do not edit `LICENSE` or `.gitignore` as part of a feature.
 - Do not rewrite published history.
 
@@ -79,7 +79,7 @@ Keep new browser logic that has no need for the DOM (for example the pagination 
 
 A ticket is done when its acceptance criteria were observed, not when the code was written. Put this in the pull request:
 
-1. The full output tail of `python -m unittest discover -s tests -v`: the `Ran N tests` line and `OK`. State N. It must not be lower than on `main` (38 at the baseline), and no test may be skipped, deleted or weakened without a sentence explaining why.
+1. Green CI on the pull request (every job of `.github/workflows/ci.yml`), and the full output tail of `python -m unittest discover -s tests -v`: the `Ran N tests` line and `OK`. State N. It must not be lower than on `main` (38 at the baseline), and no test may be skipped, deleted or weakened without a sentence explaining why.
 2. For each acceptance check ID the ticket names (for example `CS-T03`): the test name that covers it, or the manual step and what was seen.
 3. For a change to the schema: a test that opens a database of the previous version built in a temporary directory, and a test that a newer `user_version` is still refused with exit code 2.
 4. For a change in the browser client: what was run in a real browser, on which browser version and operating system, with external requests blocked, and whether the console showed errors. If no browser was run, say "not verified in a browser" in those words.
@@ -114,6 +114,19 @@ When asked to implement, continue or finish a GitHub issue, follow the playbook 
 - A role with `Read, Grep, Glob` cannot run commands. Give it the diff, the acceptance criteria and the recorded command output.
 - The pull request description has a section "Agent roles run": each role that ran, what it was asked and its verdict, and any step done without a role.
 - The same role names exist in a user-level Agency Agents install (`~/.claude/agents/`). Inside this repository the project copies take precedence. A session that was already open when the files changed keeps the old definitions; start a new session.
+
+## Delivery workflow
+
+How a ticket gets from the queue to the owner. Each piece is described in its own file; this part only links them.
+
+- **Start and driver.** Only the owner starts ticket work, with `/next-ticket` ([`.claude/skills/next-ticket/SKILL.md`](.claude/skills/next-ticket/SKILL.md)); it runs one ticket and follows the playbook [`implement-ticket`](.claude/skills/implement-ticket/SKILL.md). There is no scheduler. Labels: `status:ready`, `status:blocked`, `status:in-progress`, `needs-decision`.
+- **Review gate hook.** [`.claude/hooks/role_gate.py`](.claude/hooks/role_gate.py) blocks `gh pr create` and `gh pr ready` until Code Reviewer and Reality Checker ran after the last code edit; documentation-only changes pass. Start Claude Code with `ROLE_GATE=off` in the environment to switch it off for that session.
+- **Permissions.** [`.claude/settings.json`](.claude/settings.json): documented commands are allowed; force pushes, pushes to `main`, merges, releases and reads of `.env` are denied; edits to CI, agent configuration and Loop files ask first.
+- **CI.** [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs the unit tests and the gate self-test on Linux and Windows, Python 3.12 and 3.13. Every job must be green before a pull request is marked ready. The intermittent Windows test of issue #9 is reported, never worked around.
+- **Pull request.** Use [`.github/pull_request_template.md`](.github/pull_request_template.md). Add one line to [`CHANGELOG.md`](CHANGELOG.md) under Unreleased in every ticket pull request.
+- **UI and writing.** [`docs/ui-quality.md`](docs/ui-quality.md) holds the ten UI rules; the `ui-ux-pro-max` and `unslop` skills in `.claude/skills/` are used for UI work and for copy.
+- **Merge and release.** Only the owner merges and releases ([`docs/RELEASING.md`](docs/RELEASING.md)). Security reports: [`SECURITY.md`](SECURITY.md).
+- **Decisions.** The owner's decisions are recorded in [`docs/owner-decisions.md`](docs/owner-decisions.md). An agent that finds one blocking a ticket stops and says so.
 
 ## Loop Engineering
 

@@ -31,6 +31,10 @@ Do not edit any file except STATE.md and loop-run-log.md. Do not commit, push, c
 Update STATE.md and append one entry to loop-run-log.md.
 ```
 
+## Ticket work is not a loop run
+
+Implementing backlog tickets is not part of this loop. The owner starts it with `/next-ticket`, and it is governed by [`CLAUDE.md`](CLAUDE.md), the `implement-ticket` playbook, the review gate hook, CI and branch protection. The loop stays report-only and unscheduled.
+
 ## Human Gates
 
 - The loop stays at L1 until the owner decides otherwise. No automated source fixes, no auto-merge, no scheduled runs.

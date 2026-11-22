@@ -29,6 +29,7 @@ Run the suite once per change; stop every server you start. No automated browser
 - Keyboard operability: labelled controls that name their section, visible focus, status and alert regions, Alt+Arrow, Ctrl+S or Cmd+S, no horizontal scroll at 800 by 600 (`docs/PRD.md` section 1.6).
 - Logic that needs no DOM goes in its own file as pure functions (`CLAUDE.md`, "Architecture boundaries").
 - Figure sizes come from `width` and `height` attributes, classes or the CSS object model (`docs/architecture.md` section 6, item 5).
+- Changed screens are checked against [`docs/ui-quality.md`](../../docs/ui-quality.md): the ten UI rules, including no one-sided accent border and no tinted-background-plus-hairline status marks.
 
 **Does not apply here.** React, Vue, Angular, Svelte, TypeScript, bundling, PWAs and service workers, Lighthouse targets. Instead: plain DOM APIs and system fonts.
 
