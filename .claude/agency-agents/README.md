@@ -74,8 +74,22 @@ Fetch the same paths at a newer revision, re-apply the `tools:` line to the six 
 
 ## Local change: automatic delegation (2026-11-22)
 
-One sentence beginning "Use proactively" was appended to the `description:` line of every Agency Agents role in `.claude/agents/` (not to `loop-verifier`). Claude Code uses that field to decide when to delegate, so the roles now run during ticket work without being named. Nothing else in the role files changed.
+One sentence beginning "Use proactively" was appended to the `description:` line of every Agency Agents role in `.claude/agents/` (not to `loop-verifier`). Claude Code uses that field to decide when to delegate, so the roles now run during ticket work without being named. Apart from the section described below, nothing else in the role files changed.
 
 This supersedes any statement above that a role file is unmodified or that the `tools:` line is the only local change. To compare a role with the pinned upstream file, remove that sentence (and the `tools:` line where one was added) first.
 
 The steps at which each role runs are in `.claude/skills/implement-ticket/SKILL.md`.
+
+A section headed "In this repository" was also inserted in every Agency Agents role file (not in `loop-verifier`), directly after the closing `---` of the frontmatter and before the upstream text. It is project-specific text written for this repository: the constraints that bind the role here, the files it owns or reviews, its commands or the inputs a read-only role must be given, a checklist that cites `CLAUDE.md`, `docs/PRD.md` and `docs/architecture.md`, the parts of the upstream text that do not apply, and what the role hands back. It is not upstream text.
+
+To compare a role with the pinned upstream file, remove that section as well: delete the blank line after the frontmatter and every line from `## In this repository` through `This section and CLAUDE.md override the generic text below wherever they differ.`, then remove the "Use proactively" sentence and, where one was added, the `tools:` line. The hash of the result must equal the hash in the table above. When updating from upstream, put the section back and correct it if the project has changed.
+
+The section describes the repository as it was on 2026-11-22 (baseline M1, epic #1 planned). A ticket that changes a command, a boundary, a hard constraint or a file that a section names updates that section in the same pull request.
+
+**Verification, 2026-11-22 (after the sections were inserted, before the commit).** Claude Code 2.1.323, from the repository root, run once:
+
+```text
+claude -p "List every project subagent defined in .claude/agents with its exact name and tools, say for each whether its instructions begin with a section titled In this repository, and say whether a skill named implement-ticket is available. Plain list, no commentary." --model haiku
+```
+
+Exit code 0. The answer listed ten subagents. Software Architect, Code Reviewer, Codebase Onboarding Engineer, PDF Engine Architect, Accessibility Auditor and Reality Checker: tools `Read, Grep, Glob`, section present. Backend Architect, Frontend Developer and Test Automation Engineer: no `tools:` line (all tools), section present. `loop-verifier`: tools `Read, Grep, Glob`, no section, as intended. The skill `implement-ticket` was reported as available. Not shown by this check: no role was launched, and the answer does not say whether it came from the loaded definitions or from reading the files, so it does not prove which copy a launched role uses on a machine that also has a user-level install.
