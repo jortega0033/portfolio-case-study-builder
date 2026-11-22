@@ -5,6 +5,8 @@ Labels used throughout: **[Decision]** fixed choice, **[Default]** proposed defa
 
 All names, projects and numbers in examples and fixtures are fictional.
 
+The current state of the code, the dated verification record and the known differences between this document and the code are in [architecture.md](architecture.md).
+
 ---
 
 ## 1. Product definition

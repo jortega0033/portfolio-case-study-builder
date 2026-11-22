@@ -31,6 +31,10 @@ Tests start the real server on an ephemeral loopback port with a temporary datab
 
 `docs/PRD.md` holds the product definition, technical specification, acceptance checks and the plan for future work (typed blocks, placeholder artwork, pagination, print/PDF).
 
+`docs/architecture.md` records how the code is built today, one traced workflow with line citations, what is implemented, planned or still unverified, and where the PRD and the code disagree.
+
+`CLAUDE.md` holds the working rules for coding agents and contributors: commands, constraints, Git workflow and the evidence a finished ticket needs.
+
 ## Current limitations
 
 Implemented: title, ordered sections, save/reopen, conflict detection. Not yet implemented: typed blocks, images, pagination, print/PDF, project deletion. See the baseline verification below for the tested platforms.
