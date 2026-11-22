@@ -114,3 +114,18 @@ These names also exist in a user-level Agency Agents install (`~/.claude/agents/
 ## Loop Engineering
 
 The repository has a Loop Engineering setup at level L1: report-only, started by hand, no scheduler, no automated fixes, no auto-merge. [`LOOP.md`](LOOP.md) has the manual triage command; [`loop-constraints.md`](loop-constraints.md) has the binding rules. A triage run may change only `STATE.md` and `loop-run-log.md`. Do not raise the level or add a schedule; that is the owner's decision.
+
+## Ticket implementation: agent roles run automatically
+
+When asked to implement, continue or finish a GitHub issue, follow the playbook in [`.claude/skills/implement-ticket/SKILL.md`](.claude/skills/implement-ticket/SKILL.md). Claude Code loads it on its own for ticket work; `/implement-ticket <issue number>` starts it by hand.
+
+Delegate to the project subagents in `.claude/agents/` without waiting to be asked:
+
+- **Before coding:** Codebase Onboarding Engineer and Software Architect, as their descriptions say.
+- **While coding:** the implementing role that matches the files being changed.
+- **After coding:** each specialist reviewer whose trigger matches the change.
+- **On every ticket, before it is called done:** Code Reviewer, then Reality Checker.
+- The session that wrote a change does not count as its reviewer.
+- List the roles that ran and their verdicts in the pull request description under "Agent roles run".
+
+Each role's `description` ends with a "Use proactively ..." sentence, which is what makes Claude Code delegate to it without being told.
