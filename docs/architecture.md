@@ -6,7 +6,7 @@ Written during repository preparation on 2026-11-22 against commit `81dc815` (th
 
 Status words used below:
 
-- **Implemented**: the code exists and a check that exercises it was run on 2026-11-22.
+- **Implemented**: the code exists and a check that exercises it was run on 2026-11-22 and passed (one test passed in two of three runs; section 5, item 12).
 - **Implemented, read only**: the code exists and was read, but no check that exercises it was run.
 - **Planned**: described in the PRD, nothing in the code.
 - **Needs verification**: a claim that nobody has checked yet, or that was checked only on one platform.
@@ -67,7 +67,7 @@ Status words used below:
 | Live reading preview | Implemented | `app.js:82-103`. A headless Chrome 157 run on 2026-11-22 showed the saved fixture rendered in the preview (section 4). Typing was not exercised. |
 | Save with revision checks | Implemented | `storage.py:157-179`; `test_b05_revision_conflict`, `test_b13_rejected_save_after_good_save_leaves_state` |
 | Reopen after restart | Implemented | `tests/test_restart.py`; repeated by hand on 2026-11-22 (section 4) |
-| Host, Origin, body size, CSP | Implemented | `server.py`; `test_b07_*`, `test_b08_*`, `test_b09_*`, `test_no_cors_headers_and_security_headers` |
+| Host, Origin, body size, CSP | Implemented; early rejections need verification on Windows | `server.py`; `test_b07_*`, `test_b08_*`, `test_b09_*`, `test_no_cors_headers_and_security_headers`. See section 5, item 12. |
 | Markup-like text is stored verbatim and shown as text (CS-B10) | Implemented | `test_b10_markup_like_text_round_trips_verbatim`; the headless Chrome run showed the text escaped in the DOM and no `img` element created |
 | Conflict flow in the editor, `beforeunload` warning, confirm on project switch (section 7) | Implemented, read only | `app.js:362-375`, `app.js:452-457`, `app.js:298-301`, `app.js:437-443` |
 | Accessibility goals (section 1.6) | Needs verification | Labels and live regions exist in the source (`index.html:34-35`, `app.js:157`, `app.js:174`, `app.js:187-189`). Contrast, visible focus, tab order and the 800 by 600 layout (CS-B15) were not checked in a browser on 2026-11-22. |
@@ -86,7 +86,7 @@ A runnable end-to-end baseline exists. Environment: Windows 11, Python 3.13.14, 
 
 | Check | Command or method | Result |
 |---|---|---|
-| Unit and integration suite | `python -m unittest discover -s tests -v` | `Ran 38 tests in 18.618s`, `OK` |
+| Unit and integration suite | `python -m unittest discover -s tests -v` | Run three times, each a full run of 38 tests. First run: `Ran 38 tests in 18.618s`, `OK`. Second run: `FAILED (errors=1)`, `test_b07_content_type_and_length` raised `ConnectionAbortedError: [WinError 10053]` while reading the response. Third run: `OK`. No file under `case_study_builder/` or `tests/` differed from `81dc815` in any run. See section 5, item 12. |
 | Launch, save, restart | `python -m case_study_builder --data-dir <temp> --port 0`, then `GET /api/v1/health`, `GET /`, `POST /api/v1/projects`, `PUT /api/v1/projects/{id}`, stop, start again with the same directory, `GET /api/v1/projects/{id}` | `Serving on http://127.0.0.1:<port>/`; health `{"status": "ok", "schema_version": 1}`; create 201 at revision 1 with one section; save 200 at revision 2; the data directory held `case_studies.sqlite3`; after the restart the project was returned identical at revision 2 |
 | Page renders a saved project with other hosts unreachable | Headless Chrome with `--host-resolver-rules="MAP * ~NOTFOUND, EXCLUDE 127.0.0.1"`, `--virtual-time-budget=4000`, `--dump-dom` on `/#<project id>` | Exit 0. Status region `Loaded revision 1`. Preview contained the title as `h2`, three `h3` headings and three paragraphs. The heading `<script>alert(1)</script>` and the body `<img src=x onerror=alert(1)> & "quotes"` appeared as escaped text; the DOM had one `script` element (the app's own) and no `img` element. |
 | Chrome can print the page to a PDF | Same Chrome flags with `--print-to-pdf` | Exit 0, a PDF of 2 pages (the unpaginated page as it is today). The page count could be read from the file with a regular expression (`/Type /Page` objects and `/Count 2`). |
@@ -110,6 +110,7 @@ The two headless Chrome results matter for the planned work: they show that a br
 9. **Line height for the planned pagination.** PRD section 6.2 assumes a body line height of 24 pixels. The current preview uses 1.15 rem at 1.6, about 29.4 pixels (`app.css:99-100`). The planned page stylesheet needs its own type scale; the current preview values cannot be reused unchanged.
 10. **Keep-with-next and long paragraphs.** PRD section 6.2, rule 2, makes a heading and the whole first block one unit. Read literally, a heading followed by a paragraph longer than a page would be an overflow, although rule 4 allows that paragraph to split. The pagination ticket has to state the intended reading (heading plus the first legal fragment of a splittable paragraph).
 11. **"All baseline checks still pass" after schema 2.** PRD section 3 requires all `CS-B*` checks to keep passing after milestone M2, and CS-Q03 says "unchanged". CS-B01 expects `schema_version` 1, `test_schema_metadata` expects `user_version` 1, and `test_newer_schema_is_refused_with_exit_code_2` builds a version 2 database as the "newer" one. These three encode the version number and must change with schema 2. `/api/v1/health` also returns a literal `1` (`server.py:144`) instead of `storage.SCHEMA_VERSION`.
+12. **One test fails now and then on Windows.** `test_b07_content_type_and_length` (`tests/test_api.py:175`) failed in one of three runs on 2026-11-22 with `ConnectionAbortedError: [WinError 10053]`; the stages that inventoried and traced the repository earlier the same day saw it pass. The test posts a small body with the wrong content type. The server answers 415 without reading the body and marks the connection for closing (`server.py:60-61`, `server.py:69-70`). Likely cause, not confirmed: closing a socket that still holds unread request bytes makes Windows reset the connection, and the reset can reach the client before it has read the response. Every `POST` or `PUT` that is rejected before `_read_json` reads the body takes the same path (403, 404, 405, 411, 413, 415). PRD section 5.2 promises a JSON error for these cases; a browser could see a failed request instead. Until this is fixed, a single failure of this kind on Windows is a known defect, not a regression: rerun once and report both results.
 
 ## 6. Risks for whoever implements epic E1
 
@@ -120,5 +121,5 @@ The two headless Chrome results matter for the planned work: they show that a br
 5. **Content-Security-Policy.** `style-src 'self'` forbids inline styles and `style=` attributes; `img-src 'self' data:` allows bundled images (`server.py:18-19`). Figure sizes have to come from `width` and `height` attributes, classes or the CSS object model, not from `style` attributes.
 6. **No browser test harness.** Nothing in the repository drives a browser or runs JavaScript tests. Pagination, diagnostics, print parity and the release gate all need one. Section 4 shows a dependency-free way.
 7. **Print parity is unproven.** Whether Chrome's print layout breaks lines exactly as the screen measurement does is not known. The design should make a mismatch visible (never clip a page wrapper) so that a page count check catches it.
-8. **Tests start real servers.** About 20 seconds for 38 tests. Do not run them in a watch loop.
+8. **Tests start real servers.** About 20 seconds for 38 tests. Do not run them in a watch loop. One of them is intermittent on Windows (section 5, item 12), which weakens "the suite passed" as evidence until it is fixed.
 9. **No project deletion and no list paging** (assumption A7). `GET /api/v1/projects` returns everything (`storage.py:113-123`).

@@ -83,7 +83,16 @@ Run on 2026-11-22 from the repository root, after the adaptations above and befo
 | `npx --yes @cobusgreyling/loop@0.2.0 doctor .` | exit 0, `Status: HEALTHY`, `Ready: 100/100 L2`, `state=STATE.md LOOP.md=yes budget=yes run-log=yes gate=no` |
 | `npx --yes @cobusgreyling/loop@0.2.0 status .` | exit 0, `Pattern: daily-triage`, `Ready: 100/100 L2`, `State: STATE.md · never`, `constraints=yes`, no recent runs |
 
-"Ready: 100/100 L2" is the tool's score for which files exist. It is not the operating level. The operating level is L1 report-only. In a sibling repository prepared the same way, the label moved to "L3" once the commit that added `STATE.md` and `loop-run-log.md` existed, because the tool counts any recent commit touching those files as loop activity; the same may show here and means nothing about readiness. Doctor's suggested next actions (a `docs/safety.md`, issue and pull request templates, workflows, a pattern registry) were not followed: this repository has no CI, and the denylist lives in `loop-constraints.md`. `gate=no` means no CI gate workflow exists, which is intended.
+Run again on 2026-11-22 after the files were committed:
+
+| Command | Result |
+|---|---|
+| `npx --yes @cobusgreyling/loop@0.2.0 doctor .` | exit 0, `Status: HEALTHY`, `Ready: 100/100 L3`, `state=STATE.md LOOP.md=yes budget=yes run-log=yes gate=no` |
+| `npx --yes @cobusgreyling/loop@0.2.0 status .` | exit 0, `Pattern: daily-triage`, `Ready: 100/100 L3`, `State: STATE.md · never`, `constraints=yes`, no recent runs |
+
+The label moved from L2 to L3 between the two runs although no loop run took place; the only change was that the files were committed. The likely reason, taken from the same observation in a sibling repository and not checked in the tool's source here, is that the tool counts a recent commit touching `STATE.md` or `loop-run-log.md` as loop activity.
+
+"Ready: 100/100 L2" or "L3" is the tool's score for which files exist and how recently they changed. It is not the operating level. The operating level is L1 report-only. Doctor's suggested next actions (a `docs/safety.md`, issue and pull request templates, workflows, a pattern registry) were not followed: this repository has no CI, and the denylist lives in `loop-constraints.md`. `gate=no` means no CI gate workflow exists, which is intended.
 
 ## Links
 

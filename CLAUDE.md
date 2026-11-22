@@ -33,7 +33,7 @@ python -m case_study_builder --data-dir ./demo-data --port 8765
 - Set `PYTHONDONTWRITEBYTECODE=1` if you do not want `__pycache__` folders (they are ignored either way).
 - On Linux use `python3` if `python` is missing.
 
-Both commands were run on 2026-11-22 during repository preparation (Windows 11, Python 3.13.14): 38 tests, `OK`; the server started, saved a case study and returned it unchanged after a restart. Details and the checks that were not run are in [`docs/architecture.md`](docs/architecture.md) section 4.
+Both commands were run on 2026-11-22 during repository preparation (Windows 11, Python 3.13.14). The suite has 38 tests. It printed `OK` in two of three runs; in one run `test_b07_content_type_and_length` raised `ConnectionAbortedError: [WinError 10053]`. That is a known intermittent defect of the baseline on Windows ([`docs/architecture.md`](docs/architecture.md) section 5, item 12), not something to work around: if it happens, rerun once and report both results; never skip or loosen the test. The server started, saved a case study and returned it unchanged after a restart. Details and the checks that were not run are in [`docs/architecture.md`](docs/architecture.md) section 4.
 
 Checks that do not exist yet: there is no JavaScript unit test runner, no automated browser test and no print or PDF check. The browser flow in PRD section 10 is manual. Do not claim a browser check passed unless you ran it and kept the evidence.
 
