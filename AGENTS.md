@@ -4,7 +4,7 @@ The working rules for any coding agent in this repository are in [`CLAUDE.md`](C
 
 ## Ticket workflow
 
-To implement a GitHub issue, follow the playbook [`.claude/skills/implement-ticket/SKILL.md`](.claude/skills/implement-ticket/SKILL.md) and the section "Project agents and ticket workflow" in `CLAUDE.md`. The roles are in `.claude/agents/`; each file starts with a section "In this repository". A tool that cannot delegate to them uses that section as the checklist for the step and says so in the pull request.
+To implement a GitHub issue, follow the playbook [`.claude/skills/implement-ticket/SKILL.md`](.claude/skills/implement-ticket/SKILL.md) and the section "Project agents and ticket workflow" in `CLAUDE.md`. The roles are in `.claude/agents/`; each file starts with a section "In this repository". Pick leaf tickets only, never a container (`tracking`, `epic` or open sub-issues). A tool that cannot delegate to them uses that section as the checklist for the step and says so in the pull request.
 
 ## Test commands
 
