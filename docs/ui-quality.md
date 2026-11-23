@@ -21,3 +21,4 @@ Binding since 2026-11-22 (owner decision, see [`owner-decisions.md`](owner-decis
 - Enforcement is by that review gate, not by a script. Rule 1 can be linted with a search for one-sided `border-left`, `border-right`, `border-inline-start` or `border-inline-end` widths above 2px; rule 2 cannot be detected reliably from CSS.
 - The hard constraints in `CLAUDE.md` still apply: no external fonts, images or icons, no inline `style=`.
 - Colours come from the design tokens in [`design-tokens.md`](design-tokens.md); new UI adds no colour literals.
+- Rule 8 is read with the Rules section of [`design-tokens.md`](design-tokens.md) and decision 14 in [`owner-decisions.md`](owner-decisions.md): the accent also marks the current step, and `--focus` is a focus indicator, exempt from the accent limit.
