@@ -1,11 +1,4 @@
 :root {
-  --paper: #fbf6ec;
-  --ink: #2a2230;
-  --plum: #5b2a5e;
-  --plum-dark: #431d46;
-  --line: #cdbfae;
-  --panel: #ffffff;
-  --danger: #8a1c1c;
   --serif: Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
   --sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }
@@ -15,23 +8,24 @@ body {
   margin: 0;
   font-family: var(--sans);
   font-size: 16px;
-  color: var(--ink);
-  background: #f1ebe0;
+  color: var(--fg);
+  background: var(--bg);
   display: flex;
   flex-direction: column;
 }
 [hidden] { display: none !important; }
 .app-header {
-  background: var(--plum);
-  color: #fff;
+  background: var(--surface);
+  color: var(--fg);
+  border-bottom: 1px solid var(--border);
   padding: 0.5rem 1rem;
 }
 .app-name { margin: 0; font-size: 1.1rem; font-weight: 600; }
 .layout { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .browser {
   padding: 0.5rem 1rem;
-  background: #e8dfd0;
-  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
 }
 #project-list {
   list-style: none; margin: 0.5rem 0 0; padding: 0;
@@ -39,54 +33,53 @@ body {
 }
 #project-list button { text-align: left; }
 #project-list button[aria-current="true"] {
-  background: var(--plum); color: #fff; border-color: var(--plum);
+  background: var(--primary); color: var(--on-primary); border-color: var(--primary);
 }
 .workspace { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-.editor { padding: 1rem; background: #f7f3ec; }
-.preview { background: var(--paper); padding: 1.5rem 1rem; }
+.editor { padding: 1rem; background: var(--bg); }
+.preview { background: var(--bg); padding: 1.5rem 1rem; }
 
 button, input, textarea { font: inherit; color: inherit; }
 button {
   min-height: 2.5rem;
   padding: 0.35rem 0.8rem;
-  border: 2px solid var(--plum);
+  border: 2px solid var(--control-border);
   border-radius: 6px;
-  background: #fff;
-  color: var(--plum-dark);
+  background: var(--bg-raised);
+  color: var(--fg);
   cursor: pointer;
 }
-button:hover:not(:disabled) { background: #efe3f0; }
-button.primary { background: var(--plum); color: #fff; }
-button.primary:hover:not(:disabled) { background: var(--plum-dark); }
-button:disabled { opacity: 0.55; cursor: not-allowed; border-color: #8a7f8c; }
+button:hover:not(:disabled) { background: var(--bg-sunken); }
+button.primary { background: var(--primary); color: var(--on-primary); border-color: var(--primary); }
+button.primary:hover:not(:disabled) { background: var(--primary-press); border-color: var(--primary-press); }
+button:disabled { opacity: 0.55; cursor: not-allowed; border-color: var(--border); }
 :focus-visible {
-  outline: 3px solid var(--plum);
+  outline: 3px solid var(--focus);
   outline-offset: 2px;
-  box-shadow: 0 0 0 6px #fff;
+  box-shadow: 0 0 0 6px var(--bg);
 }
-.app-header :focus-visible { outline-color: #fff; }
 
 .field { margin-bottom: 1rem; }
 label { display: block; font-weight: 600; margin-bottom: 0.25rem; }
 input[type="text"], textarea {
   width: 100%;
   padding: 0.5rem;
-  border: 2px solid #6d6270;
+  border: 2px solid var(--input-border);
   border-radius: 6px;
-  background: #fff;
+  background: var(--bg-raised);
 }
 textarea { min-height: 8rem; resize: vertical; line-height: 1.45; }
 fieldset.section {
   margin: 0 0 1rem;
   padding: 0.75rem;
-  border: 1px solid var(--line);
+  border: 1px solid var(--border);
   border-radius: 8px;
-  background: var(--panel);
+  background: var(--surface);
 }
-fieldset.section legend { font-weight: 700; padding: 0 0.4rem; color: var(--plum-dark); }
+fieldset.section legend { font-weight: 700; padding: 0 0.4rem; color: var(--fg); }
 .section-tools { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }
 .actions { display: flex; gap: 0.6rem; margin: 1rem 0; }
-.empty { color: #4a4050; font-style: italic; }
+.empty { color: var(--muted); font-style: italic; }
 #status { min-height: 1.5rem; margin-top: 0.5rem; font-weight: 600; }
 #error { color: var(--danger); font-weight: 600; }
 #error:empty { display: none; }
@@ -98,17 +91,17 @@ fieldset.section legend { font-weight: 700; padding: 0 0.4rem; color: var(--plum
   font-family: var(--serif);
   font-size: 1.15rem;
   line-height: 1.6;
-  color: #231c28;
+  color: var(--fg);
   overflow-wrap: anywhere;
 }
-#preview-article h2 { font-size: 2rem; line-height: 1.2; margin: 0 0 1rem; color: var(--plum-dark); }
-#preview-article h3 { font-size: 1.5rem; line-height: 1.3; margin: 1.8rem 0 0.5rem; color: var(--plum-dark); }
+#preview-article h2 { font-size: 2rem; line-height: 1.2; margin: 0 0 1rem; color: var(--fg); }
+#preview-article h3 { font-size: 1.5rem; line-height: 1.3; margin: 1.8rem 0 0.5rem; color: var(--fg); }
 #preview-article p { margin: 0 0 1rem; white-space: pre-line; }
 
 @media (min-width: 800px) {
   body { height: 100vh; overflow: hidden; }
   .layout { flex-direction: row; }
-  .browser { width: 14rem; flex: none; overflow-y: auto; border-bottom: 0; border-right: 1px solid var(--line); }
+  .browser { width: 14rem; flex: none; overflow-y: auto; border-bottom: 0; border-right: 1px solid var(--border); }
   #project-list { flex-direction: column; flex-wrap: nowrap; }
   #project-list button { width: 100%; }
   .workspace { flex-direction: row; }

@@ -16,6 +16,7 @@ A dated record of the decisions the owner made for this repository, so the rules
 | 10 | 2026-11-22 | Open decisions on tickets are settled with the ticket's stated default (list below). | Epic [#1](https://github.com/jortega0033/portfolio-case-study-builder/issues/1) and the issues named below |
 | 11 | 2026-11-22 | Rust is verified in CI only. Not applicable here: this repository has no Rust. | None |
 | 12 | 2026-11-22 | The ten UI rules in `docs/ui-quality.md` are binding, and the `ui-ux-pro-max` and `unslop` skills are installed in the repository and used for UI work and for copy. | [`ui-quality.md`](ui-quality.md), `.claude/skills/ui-ux-pro-max/`, `.claude/skills/unslop/` |
+| 13 | 2026-11-23 | Visual system: Pipenzo Flow look tokens ([`design-tokens.md`](design-tokens.md)). SDLC kit version: jortega0033/sdlc-kit v1.0.0. | [`design-tokens.md`](design-tokens.md), `case_study_builder/static/tokens.css`, `case_study_builder/static/app.css` |
 
 ## Entry 10: open decisions settled by the ticket default (2026-11-22)
 

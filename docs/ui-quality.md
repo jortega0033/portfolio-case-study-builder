@@ -20,3 +20,4 @@ Binding since 2026-11-22 (owner decision, see [`owner-decisions.md`](owner-decis
 - The Frontend Developer, Accessibility Auditor and Code Reviewer roles name this file in their checklists. The Code Reviewer runs on every ticket and treats a breach as a blocker.
 - Enforcement is by that review gate, not by a script. Rule 1 can be linted with a search for one-sided `border-left`, `border-right`, `border-inline-start` or `border-inline-end` widths above 2px; rule 2 cannot be detected reliably from CSS.
 - The hard constraints in `CLAUDE.md` still apply: no external fonts, images or icons, no inline `style=`.
+- Colours come from the design tokens in [`design-tokens.md`](design-tokens.md); new UI adds no colour literals.

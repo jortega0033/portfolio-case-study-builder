@@ -18,7 +18,7 @@ def read(name):
 
 class StaticAssets(unittest.TestCase):
     def test_b12_no_external_urls(self):
-        for name in ("index.html", "app.css", "app.js"):
+        for name in ("index.html", "tokens.css", "app.css", "app.js"):
             text = read(name)
             self.assertIsNone(re.search(r"https?://", text), name)
             self.assertIsNone(re.search(r"""(?:src|href)\s*=\s*["']//""", text), name)
@@ -65,6 +65,9 @@ class ServedPage(ServerCase):
         status, resp, _ = self.request("GET", "/static/app.js")
         self.assertEqual(status, 200)
         self.assertIn("javascript", resp.getheader("Content-Type"))
+        status, resp, _ = self.request("GET", "/static/tokens.css")
+        self.assertEqual(status, 200)
+        self.assertTrue(resp.getheader("Content-Type").startswith("text/css"))
         status, resp, _ = self.request("GET", "/static/app.css")
         self.assertEqual(status, 200)
         self.assertTrue(resp.getheader("Content-Type").startswith("text/css"))
