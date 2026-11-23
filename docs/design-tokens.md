@@ -6,7 +6,7 @@ The interface uses the Pipenzo "Flow look" tokens: a black page in dark mode, Fl
 
 - File: `case_study_builder/static/tokens.css`, served at `/static/tokens.css` (listed in `STATIC_FILES`).
 - Source: `jortega0033/clip-to-reel-studio`, `extension/sidepanel/tokens.css`, commit `a13378ce73e5b27213c9a200fc960ec93afef054` (2026-11-21).
-- Resync: copy the file over `tokens.css`. Nothing else. Never edit the copy; the header comment of the file states the contrast rules.
+- Resync: write the file from git, not from a working tree (a checkout with `core.autocrlf=true` turns LF into CRLF): `git -C <clip-to-reel-studio> show <commit>:extension/sidepanel/tokens.css > case_study_builder/static/tokens.css`. Then check that `git hash-object case_study_builder/static/tokens.css` prints the blob hash of the pinned source (`41d6d6dbb17ea1055db9c4bc2ea8fb0b557ef108` for `a13378c`) and that `git ls-files --eol` shows `i/lf`. `.gitattributes` (`*.css text eol=lf`) keeps CRLF out. Never edit the copy; the header comment of the file states the contrast rules.
 
 ## Token groups
 
