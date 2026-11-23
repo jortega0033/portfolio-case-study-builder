@@ -33,7 +33,7 @@ body {
 }
 #project-list button { text-align: left; }
 #project-list button[aria-current="true"] {
-  background: var(--fg); color: var(--bg); border-color: var(--fg);
+  background: var(--primary); color: var(--on-primary); border-color: var(--primary);
 }
 .workspace { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .editor { padding: 1rem; background: var(--bg); }
