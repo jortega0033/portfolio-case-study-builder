@@ -20,6 +20,7 @@ CSP = ("default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'se
 
 STATIC_FILES = {
     "/": ("index.html", "text/html; charset=utf-8"),
+    "/static/tokens.css": ("tokens.css", "text/css; charset=utf-8"),
     "/static/app.css": ("app.css", "text/css; charset=utf-8"),
     "/static/app.js": ("app.js", "text/javascript; charset=utf-8"),
 }
