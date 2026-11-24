@@ -1,5 +1,7 @@
 # Project Portfolio Case Study Builder — PRD and Technical Specification
 
+> This document specifies phase 1 of the program in [#45](https://github.com/jortega0033/portfolio-case-study-builder/issues/45). Hour figures in it are early estimates for that phase; its open tickets add up to 56 to 92 hours (2026-11-24). Work that it defers is planned in the later phases only where the program names it.
+
 M1 is implemented. See the [baseline verification](../README.md#baseline-verification) for observed results. CS-B01–CS-B16 define its full exit criteria. Milestones M2–M6 are planned.
 Labels used throughout: **[Decision]** fixed choice, **[Default]** proposed default that can be changed, **[Open]** unresolved, **[Calculated]** derived by arithmetic from stated inputs, **[Planned]** demonstration not yet run, **[Observed]** result actually seen. The README records the completed checks.
 

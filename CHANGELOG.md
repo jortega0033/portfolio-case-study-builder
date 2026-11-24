@@ -6,4 +6,5 @@ All notable changes to this project are recorded here, in the [Keep a Changelog]
 
 ### Added
 
+- Program goal, score and phases 1 to 6 (#45).
 - Delivery workflow: review gate hook, CI on Linux and Windows, pull request template, UI quality rules and the `next-ticket` driver.
