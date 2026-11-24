@@ -4,6 +4,25 @@ A small, private, offline editor for portfolio case studies. A case study is a t
 
 All example content is fictional.
 
+## Program goal
+
+Grow the case-study builder into an offline publishing studio: a page-layout and typesetting engine, interactive case studies, version history with branches, and export to web, print-ready PDF and accessible EPUB, with no browser print engine or PDF library.
+
+The program is planned ([#45](https://github.com/jortega0033/portfolio-case-study-builder/issues/45)). Phase 1 is the current epic [#1](https://github.com/jortega0033/portfolio-case-study-builder/issues/1) and the only phase with tickets.
+
+**Score.** Share of a fixed document set that passes independent validators: PDF/UA, PDF/X, EPUB and WCAG, with the typesetting difference to a reference typesetter.
+
+| Phase | Content | Hours (rough) | Issue |
+|---|---|---|---|
+| 1 | The current epic and its tickets | 56 to 92 | [#1](https://github.com/jortega0033/portfolio-case-study-builder/issues/1) |
+| 2 | Typesetting | 150 to 260 | [#46](https://github.com/jortega0033/portfolio-case-study-builder/issues/46) |
+| 3 | Output formats | 120 to 200 | [#47](https://github.com/jortega0033/portfolio-case-study-builder/issues/47) |
+| 4 | Living documents | 110 to 190 | [#48](https://github.com/jortega0033/portfolio-case-study-builder/issues/48) |
+| 5 | History and review | 120 to 200 | [#49](https://github.com/jortega0033/portfolio-case-study-builder/issues/49) |
+| 6 | Design intelligence | 110 to 190 | [#50](https://github.com/jortega0033/portfolio-case-study-builder/issues/50) |
+
+About 670 to 1130 engineer hours in total: rough estimates, not measurements. The numbers in the score and the finish lines are targets until a run shows them. Only phase 1 has tickets to work; the sub-issues of a later phase are written when it starts. No single session is expected to reach the end.
+
 ## Run
 
 ```

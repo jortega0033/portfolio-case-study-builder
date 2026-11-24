@@ -33,3 +33,13 @@ A dated record of the decisions the owner made for this repository, so the rules
 | #11 | Figure scale diagnostic | Counts the final scale, whether column width or page height caused it |
 | #1 | Callout blocks | Not part of this epic |
 | #10 | Fallback DevTools Protocol client if the page-box check fails (the ticket says to stop and ask the owner and states no default) | Conservative option: do not build it; stop and report. Flag in issue |
+
+## Program decisions (owner, 2026-11-24)
+
+The owner accepted the goal and each suggestion below. They apply from the phase they name; the rules of `CLAUDE.md` hold for phase 1 as written.
+
+| Decision | Implemented in |
+|---|---|
+| The repository has a program goal above phase 1: an offline publishing studio with its own typesetting, in six phases. | Program issue #45 |
+| The product rule excludes sharing and accounts. Suggested: keep it; several editors on loopback only. | Program issue #45 |
+| This idea may still sound ordinary. Suggested: lead with the typesetting and PDF engine in the submission. | Program issue #45 |
