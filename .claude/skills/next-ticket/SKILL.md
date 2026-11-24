@@ -21,7 +21,7 @@ Big tickets are split into sub-issues of 1 to 4 hours, one pull request each. A 
 
 ## Steps
 
-1. **Refresh the queue.** `gh issue list --state open --limit 100` with labels, the epic body for the order, and the sub-issues of every open container. A `status:blocked` ticket whose blockers are all closed becomes `status:ready` (`gh issue edit <n> --add-label status:ready --remove-label status:blocked`). A parent whose sub-issues are all closed is closed with a comment that names them (`gh issue close <n> --comment ...`).
+1. **Refresh the queue.** `gh issue list --state open --limit 100` with labels, the epic body for the order, and the sub-issues of every open container. A `status:blocked` ticket whose blockers are all closed becomes `status:ready` (`gh issue edit <n> --add-label status:ready --remove-label status:blocked`). A parent whose sub-issues are all closed is closed with a comment that names them (`gh issue close <n> --comment ...`). A ticket with no sub-issues is never closed by this step.
 2. **Pick.** If an issue number was given and it is a container, refuse it and list its open sub-issues; stop. Otherwise use it, but stop and say so if it is `status:in-progress`, `needs-decision` or has an open blocker. With no number, take the first `status:ready` leaf ticket in the order above that is not `status:in-progress` and not `needs-decision`. If none qualifies, report that and stop.
 3. **Claim.** `gh issue edit <n> --add-label status:in-progress`.
 4. **Branch in a fresh worktree**, as the Git workflow in `CLAUDE.md` says: `git fetch origin`, then `git worktree add ../portfolio-case-study-builder-<n> -b feature/<n>-<short-slug> origin/main`. Work only inside that worktree. Never work on `main`.
